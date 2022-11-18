@@ -1,17 +1,24 @@
-import React from "react";
+import { FormEvent, useRef } from "react";
 import { Row, Col, Form, Stack, FormControl, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import CreatableReactSelect from "react-select/creatable";
 
-const NoteForm = () => {
+const NoteForm = ({onSubmit}) => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const markdownRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSumbit = (e: FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
-    <Form>
+    <Form onSubmit={handleSumbit}>
       <Stack gap={4}>
         <Row>
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required />
+              <Form.Control required ref={titleRef} />
             </Form.Group>
           </Col>
           <Col>
@@ -23,7 +30,7 @@ const NoteForm = () => {
         </Row>
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <FormControl as="textarea" rows={15} required />
+          <FormControl as="textarea" rows={15} required ref={markdownRef} />
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">
