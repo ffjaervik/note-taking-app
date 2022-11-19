@@ -13,11 +13,11 @@ export function useLocalStorage<T>(key: string,
         } else {
             return JSON.parse(jsonValue)
         }
-        })
+        }) //Checks if the value exists yet
 
         useEffect(() => {
           localStorage.setItem(key,JSON.stringify(value))
-        }, [value,key])
+        }, [value,key]) // every time it changes it updates
         
 
         return [value, setValue] as [T, typeof setValue]
