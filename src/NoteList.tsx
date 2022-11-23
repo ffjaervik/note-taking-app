@@ -2,26 +2,26 @@ import React, { useMemo, useState } from "react";
 import { Row, Col, Stack, Button, Form, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactSelect from "react-select";
-import {  Tag } from "./App";
-import styles from './NoteList.module.css'
+import { Tag } from "./App";
+import styles from "./NoteList.module.css";
 
 type SimplifiedNote = {
-    tags: Tag[]
-    title: string
-    id: string
-}
+  tags: Tag[];
+  title: string;
+  id: string;
+};
 
 type NoteListProps = {
   availableTags: Tag[];
   notes: SimplifiedNote[];
 };
 
-
 const NoteList = ({ availableTags, notes }: NoteListProps) => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [title, setTitle] = useState("");
 
-  const filteredNotes = useMemo(() => { //Loops through all ofthe selected tags and make sure that everyone returns true for the statement: "check our notes if it contains the tags we are looping through"
+  const filteredNotes = useMemo(() => {
+    //Loops through all ofthe selected tags and make sure that everyone returns true for the statement: "check our notes if it contains the tags we are looping through"
     return notes.filter((note) => {
       return (
         (title === "" ||
@@ -34,16 +34,17 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
     });
   }, [title, selectedTags, notes]);
 
-const NoteCard = ({id, title, tags}: SimplifiedNote) => {
-    return 
-    <Card as = {Link} to={`/${id}`} className={`h-100 text-reset text-decoration-none ${styles.card}`}>
-        <Card.Body>
-            
-            </Card.Body>
-
+  const NoteCard = ({ id, title, tags }: SimplifiedNote) => {
+    return(
+    <Card
+      as={Link}
+      to={`/${id}`}
+      className={`h-100 text-reset text-decoration-none ${styles.card}`}
+    >
+      <Card.Body></Card.Body>
     </Card>
-}
-
+    )
+  };
 
   return (
     <>
@@ -97,16 +98,12 @@ const NoteCard = ({id, title, tags}: SimplifiedNote) => {
       <Row xs={1} sm={2} lg={3} xl={4} className="g-3">
         {filteredNotes.map((note) => (
           <Col key={note.id}>
-            <NoteCard id={note.id} title={note.title} tags={note.tags}  />
+            <NoteCard id={note.id} title={note.title} tags={note.tags} />
           </Col>
         ))}
       </Row>
     </>
   );
 };
-
-
-
-
 
 export default NoteList;

@@ -36,7 +36,7 @@ function App() {
   const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
   const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
 
-  const noteWithTags = useMemo(() => {
+  const notesWithTags = useMemo(() => {
     return notes.map((note) => {
       return {
         ...note,
