@@ -23,17 +23,26 @@ type SimplifiedNote = {
 type NoteListProps = {
   availableTags: Tag[];
   notes: SimplifiedNote[];
+  onDeleteTag: (id: string) => void;
+  onUpdateTag: (id: string, label: string) => void;
 };
 type EditTagsModalProps = {
   show: boolean;
-  availableTags: Tags[];
-  handleClose : () => void
+  availableTags: Tag[];
+  handleClose: () => void;
+  onDeleteTag: (id: string) => void;
+  onUpdateTag: (id: string, label: string) => void;
 };
 
-const NoteList = ({ availableTags, notes }: NoteListProps) => {
+const NoteList = ({
+  availableTags,
+  notes,
+  onDeleteTag,
+  onUpdateTag,
+}: NoteListProps) => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [title, setTitle] = useState("");
-  const [editTagsModalIsOpen, setEditTagsModalIsOpen] = useState(false)
+  const [editTagsModalIsOpen, setEditTagsModalIsOpen] = useState(false);
 
   const filteredNotes = useMemo(() => {
     //Loops through all ofthe selected tags and make sure that everyone returns true for the statement: "check our notes if it contains the tags we are looping through"
@@ -85,6 +94,8 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
     availableTags,
     handleClose,
     show,
+    onUpdateTag,
+    onDeleteTag,
   }: EditTagsModalProps) => {
     return (
       <Modal show={show} onHide={handleClose}>
@@ -97,10 +108,19 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
               {availableTags.map((tag) => (
                 <Row key={tag.id}>
                   <Col>
-                    <Form.Control type="text" value={tag.label} />
+                    <Form.Control
+                      type="text"
+                      value={tag.label}
+                      onChange={(e) =>  onUpdateTag(tag.id, e.target.value)}
+                    />
                   </Col>
                   <Col xs="auto">
-                    <Button variant="outline-danger">&times;</Button>
+                    <Button
+                      onClick={() => onDeleteTag(tag.id)}
+                      variant="outline-danger"
+                    >
+                      &times;
+                    </Button>
                   </Col>
                 </Row>
               ))}
@@ -123,7 +143,12 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
             <Link to="/new">
               <Button variant="primary">Create</Button>
             </Link>
-            <Button variant="outline-secondary" onClick={() => setEditTagsModalIsOpen(true)}>Edit Tags</Button>
+            <Button
+              variant="outline-secondary"
+              onClick={() => setEditTagsModalIsOpen(true)}
+            >
+              Edit Tags
+            </Button>
           </Stack>
         </Col>
       </Row>
@@ -168,7 +193,13 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
           </Col>
         ))}
       </Row>
-      <EditTagsModal show={editTagsModalIsOpen} handleClose ={()=> setEditTagsModalIsOpen(false)} availableTags={availableTags} />
+      <EditTagsModal
+        show={editTagsModalIsOpen}
+        handleClose={() => setEditTagsModalIsOpen(false)}
+        availableTags={availableTags}
+        onUpdateTag={onUpdateTag}
+        onDeleteTag={onDeleteTag}
+      />
     </>
   );
 };
