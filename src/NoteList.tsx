@@ -1,5 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { Row, Col, Stack, Button, Form, Card, Badge } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Stack,
+  Button,
+  Form,
+  Card,
+  Badge,
+  Modal,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactSelect from "react-select";
 import { Tag } from "./App";
@@ -15,10 +24,16 @@ type NoteListProps = {
   availableTags: Tag[];
   notes: SimplifiedNote[];
 };
+type EditTagsModalProps = {
+  show: boolean;
+  availableTags: Tags[];
+  handleClose : () => void
+};
 
 const NoteList = ({ availableTags, notes }: NoteListProps) => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [title, setTitle] = useState("");
+  const [editTagsModalIsOpen, setEditTagsModalIsOpen] = useState(false)
 
   const filteredNotes = useMemo(() => {
     //Loops through all ofthe selected tags and make sure that everyone returns true for the statement: "check our notes if it contains the tags we are looping through"
@@ -66,6 +81,37 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
     );
   };
 
+  const EditTagsModal = ({
+    availableTags,
+    handleClose,
+    show,
+  }: EditTagsModalProps) => {
+    return (
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Tags</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Stack gap={2}>
+              {availableTags.map((tag) => (
+                <Row key={tag.id}>
+                  <Col>
+                    <Form.Control type="text" value={tag.label} />
+                  </Col>
+                  <Col xs="auto">
+                    <Button variant="outline-danger">&times;</Button>
+                  </Col>
+                </Row>
+              ))}
+            </Stack>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    );
+  };
+
+  //NoteList (component) return
   return (
     <>
       <Row className="align-items-center mb-4">
@@ -77,7 +123,7 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
             <Link to="/new">
               <Button variant="primary">Create</Button>
             </Link>
-            <Button variant="outline-secondary">Edit Tags</Button>
+            <Button variant="outline-secondary" onClick={() => setEditTagsModalIsOpen(true)}>Edit Tags</Button>
           </Stack>
         </Col>
       </Row>
@@ -122,6 +168,7 @@ const NoteList = ({ availableTags, notes }: NoteListProps) => {
           </Col>
         ))}
       </Row>
+      <EditTagsModal show={editTagsModalIsOpen} handleClose ={()=> setEditTagsModalIsOpen(false)} availableTags={availableTags} />
     </>
   );
 };
